@@ -1,0 +1,490 @@
+--------------2020.02.11
+
+Quartz集群
+
+参考项目:
+	https://github.com/xuxueli/xxl-job
+
+参考博客:
+	https://blog.csdn.net/qq_26709459/article/details/82726985
+
+
+
+--------------2020.02.12
+
+
+调度中心支持集群部署 保证HA
+执行器支持集群部署  保证HA
+大数据量任务时使用动态分片,以执行器为维度进行分片
+一致性：“调度中心”通过DB锁保证集群分布式调度的一致性, 一次任务调度只会触发一次执行
+
+
+调度中心 注意事项:	
+	1.调度中心支持集群部署，集群情况下各节点务必连接同一个mysql实例
+	2.如果mysql做主从,调度中心集群节点务必强制走主库
+	3.部署集群时机器时钟保持一致（单机集群忽视）
+	4.推荐通过nginx为调度中心集群做负载均衡，分配域名。调度中心访问、执行器回调配置、调用API服务等操作均通过该域名进行
+
+执行器 注意事项:
+	1.执行器回调地址（xxl.job.admin.addresses）需要保持一致,执行器根据该配置进行执行器自动注册等操作
+	2.同一个执行器集群内AppName（xxl.job.executor.appname）需要保持一致；调度中心根据该配置动态发现不同集群的在线执行器列表
+
+
+
+
+Bean模式(方法形式)
+	方法上添加@XxlJob注解即可
+
+
+
+
+Spring Boot + Quartz 参考
+	springboot整合 可做参考 : https://www.cnblogs.com/tqlin/p/11064519.html   项目github: https://github.com/smltq/spring-boot-demo/tree/master/quartz  
+	未依赖数据库的例子  不建议参考 : https://segmentfault.com/a/1190000020043297?utm_source=tag-newest  
+	spring整合  可做对比参考 : https://blog.csdn.net/sqlgao22/article/details/100669377  
+	
+
+
+
+
+--------------2020.02.14
+
+job1 每5s执行一次
+job2 每3s执行一次
+
+
+2020-02-14 13:51:02.072 [schedulerFactoryBean_Worker-4] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job1 Fri Feb 14 13:51:02 GMT+08:00 2020, null <----
+2020-02-14 13:51:02.081 [schedulerFactoryBean_Worker-5] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job1 Fri Feb 14 13:51:02 GMT+08:00 2020, null <----
+2020-02-14 13:51:02.088 [schedulerFactoryBean_Worker-6] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job1 Fri Feb 14 13:51:02 GMT+08:00 2020, null <----
+2020-02-14 13:51:02.097 [schedulerFactoryBean_Worker-7] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job1 Fri Feb 14 13:51:02 GMT+08:00 2020, null <----
+2020-02-14 13:51:05.006 [schedulerFactoryBean_Worker-8] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job1 Fri Feb 14 13:51:05 GMT+08:00 2020, null <----
+2020-02-14 13:51:10.004 [schedulerFactoryBean_Worker-9] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job1 Fri Feb 14 13:51:10 GMT+08:00 2020, null <----
+2020-02-14 13:51:15.005 [schedulerFactoryBean_Worker-10] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job1 Fri Feb 14 13:51:15 GMT+08:00 2020, null <----
+
+
+
+
+2020-02-14 13:47:51.009 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:47:51 GMT+08:00 2020, null <----
+2020-02-14 13:47:54.006 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:47:54 GMT+08:00 2020, null <----
+2020-02-14 13:47:57.005 [schedulerFactoryBean_Worker-3] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:47:57 GMT+08:00 2020, null <----
+2020-02-14 13:48:05.005 [schedulerFactoryBean_Worker-4] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:48:05 GMT+08:00 2020, null <----
+2020-02-14 13:48:10.005 [schedulerFactoryBean_Worker-5] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:48:10 GMT+08:00 2020, null <----
+2020-02-14 13:48:15.006 [schedulerFactoryBean_Worker-6] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:48:15 GMT+08:00 2020, null <----
+2020-02-14 13:48:20.004 [schedulerFactoryBean_Worker-7] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:48:20 GMT+08:00 2020, null <----
+2020-02-14 13:48:25.005 [schedulerFactoryBean_Worker-8] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:48:25 GMT+08:00 2020, null <----
+2020-02-14 13:48:30.004 [schedulerFactoryBean_Worker-9] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:48:30 GMT+08:00 2020, null <----
+2020-02-14 13:48:35.004 [schedulerFactoryBean_Worker-10] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:48:35 GMT+08:00 2020, null <----
+2020-02-14 13:48:40.004 [schedulerFactoryBean_Worker-11] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:48:40 GMT+08:00 2020, null <----
+2020-02-14 13:48:45.004 [schedulerFactoryBean_Worker-12] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:48:45 GMT+08:00 2020, null <----
+2020-02-14 13:48:50.004 [schedulerFactoryBean_Worker-13] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:48:50 GMT+08:00 2020, null <----
+2020-02-14 13:48:55.005 [schedulerFactoryBean_Worker-14] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:48:55 GMT+08:00 2020, null <----
+2020-02-14 13:49:00.005 [schedulerFactoryBean_Worker-15] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:49:00 GMT+08:00 2020, null <----
+2020-02-14 13:49:05.005 [schedulerFactoryBean_Worker-16] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:49:05 GMT+08:00 2020, null <----
+2020-02-14 13:49:10.005 [schedulerFactoryBean_Worker-17] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:49:10 GMT+08:00 2020, null <----
+2020-02-14 13:49:15.004 [schedulerFactoryBean_Worker-18] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:49:15 GMT+08:00 2020, null <----
+2020-02-14 13:49:20.004 [schedulerFactoryBean_Worker-19] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:49:20 GMT+08:00 2020, null <----
+2020-02-14 13:49:25.004 [schedulerFactoryBean_Worker-20] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:49:25 GMT+08:00 2020, null <----
+2020-02-14 13:49:30.004 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:49:30 GMT+08:00 2020, null <----
+2020-02-14 13:49:35.004 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:49:35 GMT+08:00 2020, null <----
+2020-02-14 13:49:40.004 [schedulerFactoryBean_Worker-3] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:49:40 GMT+08:00 2020, null <----
+2020-02-14 13:49:45.005 [schedulerFactoryBean_Worker-4] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:49:45 GMT+08:00 2020, null <----
+2020-02-14 13:49:50.004 [schedulerFactoryBean_Worker-5] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:49:50 GMT+08:00 2020, null <----
+2020-02-14 13:49:55.004 [schedulerFactoryBean_Worker-6] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:49:55 GMT+08:00 2020, null <----
+2020-02-14 13:50:00.008 [schedulerFactoryBean_Worker-7] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:50:00 GMT+08:00 2020, null <----
+2020-02-14 13:50:05.004 [schedulerFactoryBean_Worker-8] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:50:05 GMT+08:00 2020, null <----
+2020-02-14 13:50:10.004 [schedulerFactoryBean_Worker-9] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:50:10 GMT+08:00 2020, null <----
+2020-02-14 13:50:15.004 [schedulerFactoryBean_Worker-10] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:50:15 GMT+08:00 2020, null <----
+2020-02-14 13:50:20.003 [schedulerFactoryBean_Worker-11] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:50:20 GMT+08:00 2020, null <----
+2020-02-14 13:50:25.005 [schedulerFactoryBean_Worker-12] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:50:25 GMT+08:00 2020, null <----
+2020-02-14 13:50:30.004 [schedulerFactoryBean_Worker-13] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:50:30 GMT+08:00 2020, null <----
+2020-02-14 13:50:35.004 [schedulerFactoryBean_Worker-14] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:50:35 GMT+08:00 2020, null <----
+2020-02-14 13:50:40.004 [schedulerFactoryBean_Worker-15] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 13:50:40 GMT+08:00 2020, null <----
+
+
+
+
+
+
+2020-02-14 16:05:13.755 [restartedMain] INFO  org.quartz.core.QuartzScheduler -Scheduler schedulerFactoryBean_$_instance_one started.
+2020-02-14 16:05:13.763 [restartedMain] INFO  c.b.b.q.c.SpringBootQuartzClusterApplication2 -Started SpringBootQuartzClusterApplication2 in 1.263 seconds (JVM running for 1.626)
+2020-02-14 16:05:13.775 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:13 GMT+08:00 2020, null, count 0 <----
+2020-02-14 16:05:15.777 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:15 GMT+08:00 2020, null, count 1 <----
+2020-02-14 16:05:17.777 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:17 GMT+08:00 2020, null, count 2 <----
+2020-02-14 16:05:19.777 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:19 GMT+08:00 2020, null, count 3 <----
+2020-02-14 16:05:21.778 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:21 GMT+08:00 2020, null, count 4 <----
+2020-02-14 16:05:23.779 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:23 GMT+08:00 2020, null, count 5 <----
+2020-02-14 16:05:25.779 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:25 GMT+08:00 2020, null, count 6 <----
+2020-02-14 16:05:27.779 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:27 GMT+08:00 2020, null, count 7 <----
+2020-02-14 16:05:29.779 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:29 GMT+08:00 2020, null, count 8 <----
+2020-02-14 16:05:31.780 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:31 GMT+08:00 2020, null, count 9 <----
+2020-02-14 16:05:33.780 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:33 GMT+08:00 2020, null, count 10 <----
+2020-02-14 16:05:35.781 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:35 GMT+08:00 2020, null, count 11 <----
+2020-02-14 16:05:37.781 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:37 GMT+08:00 2020, null, count 12 <----
+2020-02-14 16:05:39.781 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:39 GMT+08:00 2020, null, count 13 <----
+2020-02-14 16:05:41.781 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:41 GMT+08:00 2020, null, count 14 <----
+2020-02-14 16:05:43.782 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:43 GMT+08:00 2020, null, count 15 <----
+2020-02-14 16:05:45.782 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:45 GMT+08:00 2020, null, count 16 <----
+2020-02-14 16:05:47.782 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:47 GMT+08:00 2020, null, count 17 <----
+2020-02-14 16:05:49.783 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:49 GMT+08:00 2020, null, count 18 <----
+2020-02-14 16:05:51.783 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:51 GMT+08:00 2020, null, count 19 <----
+2020-02-14 16:05:53.798 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:53 GMT+08:00 2020, null, count 0 <----
+2020-02-14 16:05:55.798 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:55 GMT+08:00 2020, null, count 1 <----
+2020-02-14 16:05:57.798 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:57 GMT+08:00 2020, null, count 2 <----
+2020-02-14 16:05:59.798 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:05:59 GMT+08:00 2020, null, count 3 <----
+2020-02-14 16:06:01.799 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:06:01 GMT+08:00 2020, null, count 4 <----
+2020-02-14 16:06:03.800 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:06:03 GMT+08:00 2020, null, count 5 <----
+2020-02-14 16:06:05.800 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:06:05 GMT+08:00 2020, null, count 6 <----
+2020-02-14 16:06:07.800 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:06:07 GMT+08:00 2020, null, count 7 <----
+2020-02-14 16:06:09.800 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:06:09 GMT+08:00 2020, null, count 8 <----
+2020-02-14 16:06:11.800 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:06:11 GMT+08:00 2020, null, count 9 <----
+2020-02-14 16:06:13.801 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:06:13 GMT+08:00 2020, null, count 10 <----
+2020-02-14 16:06:15.801 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:06:15 GMT+08:00 2020, null, count 11 <----
+2020-02-14 16:06:17.801 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:06:17 GMT+08:00 2020, null, count 12 <----
+2020-02-14 16:06:19.801 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:06:19 GMT+08:00 2020, null, count 13 <----
+2020-02-14 16:06:21.802 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:06:21 GMT+08:00 2020, null, count 14 <----
+2020-02-14 16:06:23.802 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:06:23 GMT+08:00 2020, null, count 15 <----
+2020-02-14 16:06:25.803 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:06:25 GMT+08:00 2020, null, count 16 <----
+2020-02-14 16:06:27.803 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:06:27 GMT+08:00 2020, null, count 17 <----
+2020-02-14 16:06:29.804 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:06:29 GMT+08:00 2020, null, count 18 <----
+2020-02-14 16:06:31.804 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job2 Fri Feb 14 16:06:31 GMT+08:00 2020, null, count 19 <----
+
+
+
+2020-02-14 16:06:09.858 [restartedMain] INFO  org.quartz.core.QuartzScheduler -Scheduler schedulerFactoryBean_$_instance_two started.
+2020-02-14 16:06:09.864 [restartedMain] INFO  c.b.b.q.cluster.SpringBootQuartzClusterApplication -Started SpringBootQuartzClusterApplication in 1.233 seconds (JVM running for 1.594)
+2020-02-14 16:06:47.363 [QuartzScheduler_schedulerFactoryBean-instance_two_ClusterManager] INFO  o.s.scheduling.quartz.LocalDataSourceJobStore -ClusterManager: detected 1 failed or restarted instances.
+2020-02-14 16:06:47.363 [QuartzScheduler_schedulerFactoryBean-instance_two_ClusterManager] INFO  o.s.scheduling.quartz.LocalDataSourceJobStore -ClusterManager: Scanning for instance "instance_one"'s failed in-progress jobs.
+2020-02-14 16:06:47.370 [QuartzScheduler_schedulerFactoryBean-instance_two_ClusterManager] INFO  o.s.scheduling.quartz.LocalDataSourceJobStore -ClusterManager: ......Scheduled 1 recoverable job(s) for recovery.
+2020-02-14 16:06:47.393 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job1 Fri Feb 14 16:06:47 GMT+08:00 2020, null <----
+2020-02-14 16:06:47.406 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job1 Fri Feb 14 16:06:47 GMT+08:00 2020, null <----
+2020-02-14 16:06:47.416 [schedulerFactoryBean_Worker-3] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job1 Fri Feb 14 16:06:47 GMT+08:00 2020, null <----
+2020-02-14 16:06:47.426 [schedulerFactoryBean_Worker-4] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job1 Fri Feb 14 16:06:47 GMT+08:00 2020, null <----
+2020-02-14 16:06:47.435 [schedulerFactoryBean_Worker-5] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job1 Fri Feb 14 16:06:47 GMT+08:00 2020, null <----
+2020-02-14 16:06:47.444 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job1 Fri Feb 14 16:06:47 GMT+08:00 2020, null <----
+2020-02-14 16:06:47.453 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job1 Fri Feb 14 16:06:47 GMT+08:00 2020, null <----
+2020-02-14 16:06:47.463 [schedulerFactoryBean_Worker-3] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job1 Fri Feb 14 16:06:47 GMT+08:00 2020, null <----
+2020-02-14 16:06:50.004 [schedulerFactoryBean_Worker-4] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job1 Fri Feb 14 16:06:50 GMT+08:00 2020, null <----
+2020-02-14 16:06:55.004 [schedulerFactoryBean_Worker-5] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job1 Fri Feb 14 16:06:55 GMT+08:00 2020, null <----
+2020-02-14 16:07:00.005 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job1 Fri Feb 14 16:07:00 GMT+08:00 2020, null <----
+2020-02-14 16:07:05.005 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job1 Fri Feb 14 16:07:05 GMT+08:00 2020, null <----
+
+
+
+
+
+2020-02-14 16:11:13.537 [QuartzScheduler_schedulerFactoryBean-instance_one_MisfireHandler] INFO  o.s.scheduling.quartz.LocalDataSourceJobStore -Handling 1 trigger(s) that missed their scheduled fire-time.
+
+
+
+
+
+问题: 
+	1.
+		@Bean
+		public SchedulerFactoryBean schedulerFactoryBean(JobFactory buttonJobFactory, Trigger... cronJobTrigger) throws IOException {
+			SchedulerFactoryBean factory = new SchedulerFactoryBean();
+			factory.setJobFactory(buttonJobFactory);
+			----
+			factory.setOverwriteExistingJobs(true);   // 会导致另外的job项目偷跑  
+			
+			在SchedulerAccessor类源码中的解释    默认为false, 表示不可以取代已经注册的job
+			/**
+			* Set whether any jobs defined on this SchedulerFactoryBean should overwrite
+			* existing job definitions. Default is "false", to not overwrite already
+			* registered jobs that have been read in from a persistent job store.
+			*/
+			public void setOverwriteExistingJobs(boolean overwriteExistingJobs) {
+				this.overwriteExistingJobs = overwriteExistingJobs;
+			}
+			
+			----
+			factory.setAutoStartup(true); // 设置自行启动
+			factory.setQuartzProperties(quartzProperties());
+			factory.setTriggers(cronJobTrigger);
+			factory.setDataSource(dataSource);// 使用应用的dataSource替换quartz的dataSource
+			return factory;
+		}
+
+	2.
+		程序会在一秒内重复执行多次
+		日志如下
+			2020-02-14 19:11:11.921 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:11 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:11.935 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:11 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:11.945 [schedulerFactoryBean_Worker-3] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:11 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:11.956 [schedulerFactoryBean_Worker-4] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:11 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:11.965 [schedulerFactoryBean_Worker-5] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:11 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:11.974 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:11 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:11.983 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:11 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:11.993 [schedulerFactoryBean_Worker-3] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:11 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:12.002 [schedulerFactoryBean_Worker-4] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:12 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:12.011 [schedulerFactoryBean_Worker-5] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:12 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:12.020 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:12 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:12.028 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:12 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:12.037 [schedulerFactoryBean_Worker-3] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:12 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:12.045 [schedulerFactoryBean_Worker-4] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:12 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:12.054 [schedulerFactoryBean_Worker-5] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:12 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:12.063 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:12 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:12.072 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:12 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:12.081 [schedulerFactoryBean_Worker-3] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:12 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:12.089 [schedulerFactoryBean_Worker-4] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:12 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:12.096 [schedulerFactoryBean_Worker-5] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:12 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:12.104 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:12 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:12.113 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:12 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:12.120 [schedulerFactoryBean_Worker-3] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:12 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:14.004 [schedulerFactoryBean_Worker-4] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:14 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:16.004 [schedulerFactoryBean_Worker-5] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:16 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:18.004 [schedulerFactoryBean_Worker-1] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:18 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:20.006 [schedulerFactoryBean_Worker-2] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:20 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:22.005 [schedulerFactoryBean_Worker-3] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:22 GMT+08:00 2020, null, count {} <----
+			2020-02-14 19:11:24.003 [schedulerFactoryBean_Worker-4] INFO  c.b.boot.quartz.cluster.timertask.QuartzTaskJob ----> Quartz job3 Fri Feb 14 19:11:24 GMT+08:00 2020, null, count {} <----
+
+		分析: 可能是正常情况, 在初始化时读取配置文件打印多次
+
+
+
+Quartz执行过程详解以及重复执行任务的解决方案
+https://segmentfault.com/a/1190000015492260
+
+
+
+--------------2020.02.17
+
+
+排查job在启动时, 一秒内重复执行多次的问题
+	根据job的运行逻辑
+		org.quartz.impl.jdbcjobstore
+			
+
+
+
+排查另一个job注册后无法更新数据库表中cron表达式的问题
+
+
+
+
+
+
+Quartz配置详解:
+	https://blog.csdn.net/u010648555/article/details/54863144
+
+
+
+https://www.ibm.com/developerworks/cn/opensource/os-cn-quartz/
+SimpleTrigger 一般用于实现每隔一定时间执行任务，以及重复多少次，如每 2 小时执行一次，重复执行 5 次。
+SimpleTrigger 内部实现机制是通过计算间隔时间来计算下次的执行时间，这就导致其不适合调度定时的任务。
+例如我们想每天的 1：00AM 执行任务，如果使用 SimpleTrigger 的话间隔时间就是一天。注意这里就会有一个问题，
+即当有 misfired 的任务并且恢复执行时，该执行时间是随机的（取决于何时执行 misfired 的任务，例如某天的 3：00PM）。
+这会导致之后每天的执行时间都会变成 3：00PM，而不是我们原来期望的 1：00AM。
+
+CronTirgger 类似于 LINUX 上的任务调度命令 crontab，即利用一个包含 7 个字段的表达式来表示时间调度方式。
+例如，"0 15 10 * * ? *" 表示每天的 10：15AM 执行任务。对于涉及到星期和月份的调度，CronTirgger 是最适合的，
+甚至某些情况下是唯一选择。例如，"0 10 14 ? 3 WED" 表示三月份的每个星期三的下午 14：10PM 执行任务。
+读者可以在具体用到该 trigger 时再详细了解每个字段的含义。
+
+DateIntervalTrigger 是 Quartz 1.7 之后的版本加入的，其最适合调度类似每 N（1, 2, 3...）小时，每 N 天，
+每 N 周等的任务。虽然 SimpleTrigger 也能实现类似的任务，但是 DateIntervalTrigger 不会受到我们上面
+说到的 misfired 任务的影响。另外，DateIntervalTrigger 也不会受到 DST（Daylight Saving Time， 即中国的夏令时）
+调整的影响。笔者就曾经因为该原因将项目中的 SimpleTrigger 改为了 DateIntervalTrigger，因为如果使用 SimpleTrigger，
+本来设定的调度时间就会由于 DST 的调整而提前或延迟一个小时，而 DateIntervalTrigger 不会受此影响。
+
+NthIncludedDayTrigger 的用途比较简单明确，即用于每隔一个周期的第几天调度任务，例如，每个月的第 3 天执行指定的任务。
+
+除了上面提到的 4 种 Trigger，Quartz 中还定义了一个 Calendar 类（注意，是 org.quartz.Calendar）。
+这个 Calendar 与 Trigger 一起使用，但是它们的作用相反，它是用于排除任务不被执行的情况。例如，按照 Trigger 
+的规则在 10 月 1 号需要执行任务，但是 Calendar 指定了 10 月 1 号是节日（国庆），所以任务在这一天将不会被执行。
+通常来说，Calendar 用于排除节假日的任务调度，从而使任务只在工作日执行。
+
+
+
+
+
+
+
+
+
+--------------2020.02.18
+
+
+
+一次完整的日志
+schedulerFactoryBean_QuartzSchedulerThread去数据库拿锁
+	[schedulerFactoryBean_QuartzSchedulerThread] DEBUG org.quartz.impl.jdbcjobstore.StdRowLockSemaphore -Lock 'TRIGGER_ACCESS' is desired by: schedulerFactoryBean_QuartzSchedulerThread
+schedulerFactoryBean_QuartzSchedulerThread持有锁
+	[schedulerFactoryBean_QuartzSchedulerThread] DEBUG org.quartz.impl.jdbcjobstore.StdRowLockSemaphore -Lock 'TRIGGER_ACCESS' is being obtained: schedulerFactoryBean_QuartzSchedulerThread
+	[schedulerFactoryBean_QuartzSchedulerThread] DEBUG org.quartz.impl.jdbcjobstore.StdRowLockSemaphore -Lock 'TRIGGER_ACCESS' given to: schedulerFactoryBean_QuartzSchedulerThread
+schedulerFactoryBean_Worker-4执行器拿锁
+	[schedulerFactoryBean_Worker-4] DEBUG org.quartz.impl.jdbcjobstore.StdRowLockSemaphore -Lock 'TRIGGER_ACCESS' is desired by: schedulerFactoryBean_Worker-4
+	[schedulerFactoryBean_Worker-4] DEBUG org.quartz.impl.jdbcjobstore.StdRowLockSemaphore -Lock 'TRIGGER_ACCESS' is being obtained: schedulerFactoryBean_Worker-4
+schedulerFactoryBean_QuartzSchedulerThread释放锁
+	[schedulerFactoryBean_QuartzSchedulerThread] DEBUG org.quartz.impl.jdbcjobstore.StdRowLockSemaphore -Lock 'TRIGGER_ACCESS' returned by: schedulerFactoryBean_QuartzSchedulerThread
+将锁交给执行器
+	[schedulerFactoryBean_Worker-4] DEBUG org.quartz.impl.jdbcjobstore.StdRowLockSemaphore -Lock 'TRIGGER_ACCESS' given to: schedulerFactoryBean_Worker-4
+schedulerFactoryBean_QuartzSchedulerThread链接数据库, 查询trigger信息
+	[schedulerFactoryBean_QuartzSchedulerThread] DEBUG o.springframework.jdbc.datasource.DataSourceUtils -Returning JDBC Connection to DataSource
+	未查到trigger信息
+		[schedulerFactoryBean_QuartzSchedulerThread] DEBUG org.quartz.core.QuartzSchedulerThread -batch acquisition of 0 triggers
+		{
+		schedulerFactoryBean_Worker-4释放锁
+			[schedulerFactoryBean_Worker-4] DEBUG org.quartz.impl.jdbcjobstore.StdRowLockSemaphore -Lock 'TRIGGER_ACCESS' returned by: schedulerFactoryBean_Worker-4
+		
+		}
+		
+重复步骤
+	[schedulerFactoryBean_QuartzSchedulerThread] DEBUG org.quartz.impl.jdbcjobstore.StdRowLockSemaphore -Lock 'TRIGGER_ACCESS' is desired by: schedulerFactoryBean_QuartzSchedulerThread
+	.....
+	[schedulerFactoryBean_QuartzSchedulerThread] DEBUG o.springframework.jdbc.datasource.DataSourceUtils -Returning JDBC Connection to DataSource
+	
+	查到了待执行的trigger
+	[schedulerFactoryBean_QuartzSchedulerThread] DEBUG org.quartz.core.QuartzSchedulerThread -batch acquisition of 1 triggers
+		{
+		注册job
+			[QuartzScheduler_schedulerFactoryBean-instance_two_ClusterManager] DEBUG o.springframework.jdbc.datasource.DataSourceUtils -Returning JDBC Connection to DataSource
+			[QuartzScheduler_schedulerFactoryBean-instance_two_ClusterManager] DEBUG o.s.scheduling.quartz.LocalDataSourceJobStore -ClusterManager: Check-in complete.
+			
+		执行job
+			[schedulerFactoryBean_Worker-5] DEBUG org.quartz.core.JobRunShell -Calling execute on job DEFAULT.buttonobDetail   // 注意这时候已经是另一个执行器, 上一个执行器即使未执行job也会被销毁
+		}
+
+
+重复步骤
+	[schedulerFactoryBean_QuartzSchedulerThread] DEBUG org.quartz.impl.jdbcjobstore.StdRowLockSemaphore -Lock 'TRIGGER_ACCESS' is desired by: schedulerFactoryBean_QuartzSchedulerThread
+	.....
+	[schedulerFactoryBean_QuartzSchedulerThread] DEBUG o.springframework.jdbc.datasource.DataSourceUtils -Returning JDBC Connection to DataSource
+
+
+
+
+
+
+
+--------------2020.02.20
+
+
+
+
+DEBUG项目   
+进入JobRunShell
+
+
+
+
+问题可能出在:
+debug日志
+---> Quartz job3Thu Feb 20 09:40:12 GMT+08:00 2020 misfireInstruction = 0
+
+---> Quartz job3Thu Feb 20 09:58:36 GMT+08:00 2020 misfireInstruction = -1
+
+/**
+     * Instructs the <code>{@link Scheduler}</code> that upon a mis-fire
+     * situation, the <code>updateAfterMisfire()</code> method will be called
+     * on the <code>Trigger</code> to determine the mis-fire instruction,
+     * which logic will be trigger-implementation-dependent.
+     * 
+     * <p>
+     * In order to see if this instruction fits your needs, you should look at
+     * the documentation for the <code>getSmartMisfirePolicy()</code> method
+     * on the particular <code>Trigger</code> implementation you are using.
+     * </p>
+     */
+    public static final int MISFIRE_INSTRUCTION_SMART_POLICY = 0;
+    
+    /**
+     * Instructs the <code>{@link Scheduler}</code> that the 
+     * <code>Trigger</code> will never be evaluated for a misfire situation, 
+     * and that the scheduler will simply try to fire it as soon as it can, 
+     * and then update the Trigger as if it had fired at the proper time. 
+     * 
+     * <p>NOTE: if a trigger uses this instruction, and it has missed 
+     * several of its scheduled firings, then several rapid firings may occur 
+     * as the trigger attempt to catch back up to where it would have been. 
+     * For example, a SimpleTrigger that fires every 15 seconds which has 
+     * misfired for 5 minutes will fire 20 times once it gets the chance to 
+     * fire.</p>
+     */
+    public static final int MISFIRE_INSTRUCTION_IGNORE_MISFIRE_POLICY = -1;
+
+
+
+
+确实是正常情况,正常执行之前错过的任务
+但是现在问题是为什么misfire策略设置失败
+
+实现job执行日志功能
+参考
+	https://cloud.tencent.com/developer/article/1478819
+
+解决lombok的类get/set方法报错问题
+在eclipse的ini文件添加两行
+-Xbootclaspath:C:\AllStuff\Java\develop\apache-maven-repository\org\projectlombok\lombok\1.18.2\lombok-1.18.2.jar
+-javaagent:C:\AllStuff\Java\develop\apache-maven-repository\org\projectlombok\lombok\1.18.2\lombok-1.18.2.jar
+
+
+CommonDataService
+	public List<HashMap<String, Object>> queryDynamicSQL(CommonData commonData, Map<String, ?> data) {
+		if(commonData.getCode().equals("updateCommunicationStatus") { // 如果需要更新CommunicationStatus
+			cacheManager.getCache(CACHE_REGION_NAME).evict("communicationTask_"+data.get("contactId"));
+			cacheManager.getCache(CACHE_REGION_NAME).evict("communicationTaskToday_"+data.get("contactId"));
+			// 清除commonData缓存中的communicationTaskToday_ + "contactId"和communicationTask_ + "contactId" 的数据
+		}
+		
+		
+	
+	}
+
+
+
+
+
+
+
+
+--------------2020.02.21
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
