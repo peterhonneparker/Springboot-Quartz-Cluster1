@@ -1,0 +1,25 @@
+server:
+  port: 8081
+
+logging: 
+    file: logback.xml
+    
+spring: 
+    dataSource: 
+        url: jdbc:mysql://localhost:3306/qrtz?characterEncoding=utf-8&autoReconnect=true&allowMultiQueries=true&useSSL=false&zeroDateTimeBehavior=convertToNull
+        username: root
+        password: root
+        driver-class-name: com.mysql.jdbc.Driver
+        type: com.zaxxer.hikari.HikariDataSource
+        hikari:
+            minimum-idle: 5
+            maximum-pool-size: 15
+            idle-timeout: 30000
+            pool-name: DatebookHikariCP
+            max-lifetime: 1800000
+            connection-timeout: 30000
+            connection-test-query: 'SELECT 1'
+# Path does not chain with any of the trust anchors     
+# 在windows上是MySql5.5没有问题，5.8出现异常把useSSL=true改为useSSL=false就好了。      
+quartz:
+    cronExpression: '*/3 * * * * ?'
