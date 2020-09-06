@@ -1,0 +1,167 @@
+
+
+p2 : 弗洛伊德
+	关于人类理性
+	三种人格结构there are three distinct processes 
+		id 本我
+		ego 自我
+		super-ego 超我
+	行为模式和思维方式是这三种人格冲突后的产物
+	三种人格结构随个体的发展逐渐出现
+		id 本我 与生俱来，由赤裸裸的原始欲望组成，它是盲目的  遵循快乐原则  就像人类的婴儿就是纯粹的本我， 
+		ego 自我 遵循现实原则, 自我的出现标志着意识的起源
+		super-ego 超我  也是盲目的,是一种道德良知,告诉你什么是不该做的, 并且告诉你不能有做坏事的想法，于此欲望就受到了压抑
+
+	液压理论
+		一些欲望会通过梦境和口误表现出来，一些欲望在特定情况下会通过特定的临床症状表现出来
+	
+	人格发展分为5个阶段
+		口腔期 oral stage
+			快乐来自于口腔的动作 吮吸 咀嚼.
+			过早的断奶可能会导致人格发展停留在口腔期,形成口腔期人格
+				表现: 
+					暴饮暴食 抽烟
+					很依赖他人,粘人
+		anal stage
+			没有训练好
+				表现:
+					不愿意排泄
+					强迫症,洁癖
+		性器官期 phallic stage (3-4岁)
+			性器官成了快乐的主要来源
+				表现:
+					男人或女人表现的过分男性化
+					导致女性产生对于关注或抑制的欲求 need for attention or domaination
+					男性的恋母情结（Oedipus Complex），女性的恋父情结(Electra Complex, penis envy story)
+				在性器官期到达之前一直在压抑性性欲
+		
+	
+	
+	防御机制 defense mechanisms: 
+			· 很多我们会在日常生活中使用的方法，阻止来自本我的原始欲望进入意识之中
+			· 有些事情我们不想知道，有些欲望我们不想承认，我们会设法将其隐藏起来
+			· 通过防御机制去维持无意识系统的平衡
+		例如:
+			升华(Sublimation): 
+				将由本我产生的一些bad energy，如性冲动或是攻击欲望 以别的方式释放出来
+				you might have a lot of energy, maybe sexual energy or aggressive energy, but instead of turning
+				it to a sexual or aggressive target, you focus it in some other way
+					例如：毕加索通过绘画释放sexual energy
+					
+			移置(Displacement): 
+				将自己某些不道德的想法或欲望以安全的方式释放出来
+				you have certain shameful thought or desires, and you refocus them more appropriately
+					例如：受到父亲bullie的男孩会产生愤怒，想要伤害父亲，但这个想法是可耻的而且难以实现的，
+					于是可能会将这个愤怒的energy发泄在狗的身上，觉得狗可恨，因为狗是一个acceptable target
+				
+			投射机制(Projection): 
+				如果我有某种令自己不能容忍的冲动,我就把他投射到别人身上
+				I have certain impulses I am unconfortable with, so rather than own them myself,
+				I project them to somebody else.
+					弗洛伊德举的一个典型例子，同性恋的欲望：
+						我对你产生了强烈的欲望，我为这种性欲感到羞耻，所以我会对你说：
+						“Are you looking at me in a sexual manner? are you lusting after me? How disgusting”
+						因为这样说不仅满足了我的自我欲求，我还投射到了你的身上(将他们自己的性欲投射到了别人的身上)
+				
+			合理化(Rationalization): 
+				当做坏事或有不良想法的时候,将其合理化,为行为寻找可以被社会接受的理由
+				when you do something or think something bad, you rationalize it, and you give it a more
+				socially acceptable explanation.
+					例如：比较喜欢打孩子的父母，会解释说这是对孩子好，我只是想做一个好家长而已
+					
+			退行(Regression): 
+				孩子经常使用这种防御机制，意思是在感到压力和受伤的时候，会回归到发展的某个早期阶段如口腔期，会表现出年幼的行为
+				In the times of stress and trauma, they'll become younger, they'll act youger, they might cry,
+				they might suck their thumb, seek out a blanket or so on
+				
+		试图将欲望抑制在无意识中的防御机制不起作用时，就会造成一种病症：
+			歇斯底里症(Hysteria)
+				临床表现：
+					癔症性失明(Hysterical blindness)和癔症性失聪(Hysterical deafness)
+						意味着你在并无器质性损伤的情况下看不见和听不见
+					瘫痪(Paralysis)
+					震颤(trembling)
+					恐慌症(Panic attacks)
+					健忘症(Gaps of memory, amnesia)
+				
+		科学的探讨弗洛伊德的理论
+			关于无意识的例证
+				· 对于语言的理解
+				· 低于意识水平的暗示，或者是并没有察觉到的信息会(sbuliminal words)，对于你的态度的影响是无意识的
+			
+			
+			
+			
+			
+P5婴儿是如何思考的 Everything is the way it is because it got that way 万物如此皆因其本
+	婴儿对世界的理解通过两种机制完成
+		同化
+			反应范围的扩大; 讲新信息纳入已有的认知结构中
+				例如习惯吮吸乳房的婴儿会吮吸奶嘴
+		顺从
+			改变行为方式; 改变认知结构以适应新的环境和信息
+				根据在吮吸的东西来改变他的嘴型
+	同化和顺从两种机制帮助婴儿度过发展的各种阶段
+		感知运动阶段(sensorimotor stage)
+			再次阶段婴儿对世界没有什么真正的认知,对过去和未来都没有,只是通过触摸和观看,但不能对所触摸和看到的定西进行
+			逻辑推理,在此阶段婴儿发展出客体永存性(object permanence: 知道某人或某物虽然看不见,但他们仍然存在)的概念
+			(Piaget认为婴儿在9个月大的时候开始发展出客体和客体永存性的概念)
+		前运算阶段(pre-operational stage  四到五岁)
+			the capacity to represent the world,to have the world inside your head, comes to being
+			在此阶段婴儿拥有了表征事务在闹钟构建世界的能力,但这种能力是有限的
+				局限之一是儿童是以自我为中心(egocentric)的, 他们没有意识到别人眼中的世界和自己看到的是不一样的(三山实验)
+			局限之二是"守恒"(conservation)
+				there's ways to transform things such that some aspects of them change and the other remain the same
+				而这个阶段的儿童并不理解这一点
+		具体运算阶段(concrete operations 七到十二岁)
+			在此阶段儿童可以解决守恒问题,但抽象推理能力仍然有限;逻辑推理仅局限于,基于自己能感知到的世界;在十二岁儿童的抽象推理和
+			科学推理能力得到完善
+		
+			
+		
+P14什么激发我们
+Steve Pinker <How the mind works>
+	雄性和雌性的区别是什么
+		雄性有较小的生殖细胞  精细胞
+		雌性有很大的生殖细胞  除了有基因genes还有食物food保护罩protective cover and all sort of other stufff
+	
+	亲本投资(parental investent)：
+		亲本投资理论的核心概念是“投资”，基本假设是两性繁殖过程中，两性都有最低限度的绝对的投资，就是提供双方的生殖细胞。
+		该理论认为投资多的一方在选择配偶的时候更挑剔；投资少的一方，同性内的竞争会更为激烈。
+		亲本投资的性别差异是性选择和所有与性别有关的进化的原动力。
+		
+		可以通过亲本投资来预测体型差异和攻击型差异
+	
+P15道德
+	从进化论的角度看，适者生存，竞争资源，为什么动物会进化出道德感？
+		1.亲缘选择
+			由于进化论是站在基因的层面，这就意味着基因都是利他主义的，因为要保护有相同基因的其他动物，如对亲缘
+			最利他的行为：牺牲自己生命去帮助他人
+			
+		2.合作
+			即使不相关的动物间也会友好相处，互相警告危险的来临
+		
+	如何理解个体天生的道德感		
+		1.同理心
+			简单理解为我在乎你痛苦的感觉
+			eg:黑猩猩拍栏杆就能得到食物，但如果每次拍栏杆，另一只黑猩猩就会受到痛苦的电击
+			则黑猩猩不会很经常的拍栏杆。如果每次拍栏杆，另一只兔子会受到电击，则黑猩猩的行为不会受到影响
+		2.道德感
+	
+	亚里士多德的观点：同理心和道德感不一定是逻辑相关的
+		我能感受到你的痛苦，但我不一定会去帮助你，我可以选择躲开，或者责备你让我感受到这种痛苦
+		但是这种情况同理心依然导致了道德焦虑(moral concern)和行动(action)
+	
+	如果你同情某人，并且让你感受到他的感受，你更可能会对他们友善一些
+
+
+
+	
+
+
+
+
+
+
+
+	
